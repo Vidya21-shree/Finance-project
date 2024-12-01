@@ -17,12 +17,10 @@ Schema = StructType([
 
 df = spark.read.csv("file:///C:/Users/Lalan/PycharmProjects/Bigdata/inputfolder/orders.csv",schema = Schema,header=True)
 
-closed_orders = df.filter(col("status")=="CLOSED")
-closed_orders_with_date = closed_orders.withColumn("order_date",to_date(col("order_date1"),"yyyy-MM-dd HH:mm:ss.S"))
-closed_monthly = closed_orders_with_date.withColumn("month",date_format("order_date","yyyy-MM"))
-total_df = closed_monthly.groupBy("month").agg(count("*").alias("total_sales_per_moth"))
-ordered_df = total_df.orderBy("month")
-ordered_df.show()
+filtered_df = df.filter(col("status")=="CLOSED")
+formated_df = filtered_df.withColumn("order_date",to_date("order_date1","yyyy-MM-DD HH-mm-ss.S"))
+format_df = formated_df.withColumn("month",date_format("order_date","yyyy-MM"))
+selected_df = format_df.groupBy("month").agg(count("order_id1").alias("totla_closed_orders")).orderBy("month").show()
 
 
 
